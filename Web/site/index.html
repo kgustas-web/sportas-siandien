@@ -82,6 +82,36 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .inner{max-width:600px;margin:0 auto;width:100%}
 .nav .bar{max-width:600px;margin:0 auto;width:100%}
 
+/* ── wide screens read as a site, not a phone ──
+   The filter stops hiding behind an icon and becomes a row of links, with
+   the name on the left the way a header works. The timeline keeps its
+   column; only the chrome widens. */
+.brand,.links{display:none}
+@media (min-width:900px){
+  .nav .bar{max-width:1040px;height:56px;padding:0 24px}
+  .nav .title,.nav .trail{display:none}
+  .brand{
+    display:block;font-size:17px;font-weight:600;letter-spacing:-.01em;
+    color:var(--label);white-space:nowrap;
+  }
+  .links{
+    display:flex;gap:4px;margin-left:auto;align-items:center;
+    /* Seven sports already nearly fill the bar; more should scroll
+       rather than push the name off the left edge. */
+    overflow-x:auto;scrollbar-width:none;min-width:0;
+  }
+  .links::-webkit-scrollbar{display:none}
+  .brand{flex:none}
+  .links button{
+    padding:7px 12px;border-radius:8px;font-size:15px;color:var(--label2);
+    white-space:nowrap;
+  }
+  .links button:hover{color:var(--label);background:var(--fill)}
+  .links button.on{color:var(--label);background:var(--fill);font-weight:500}
+  .scroll{padding-top:56px}
+  h1.day.first{margin-top:20px}
+}
+
 /* A second filter, and only when the first one asks for it: pick Lithuania
    and the sports inside it appear. Not a permanent band. */
 .chips{

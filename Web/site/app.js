@@ -175,13 +175,14 @@ function pop() {
 }
 
 /* Builds a nav bar. `track` turns on day-tracking against .daymark elements. */
-function chrome(v, {backLabel, title, filter, track} = {}) {
+function chrome(v, {backLabel, title, filter, links, brand, track} = {}) {
   const nav = document.createElement('div');
   nav.className = 'nav';
   nav.innerHTML = '<div class="bar">' +
     (backLabel
       ? '<button class="back"><svg viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"/></svg><span></span></button>'
       : '') +
+    (brand ? '<span class="brand"></span>' : '') +
     '<div class="title"></div>' +
     (filter ? '<div class="trail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 9.5h8M9.5 12h5M11 14.5h2"/></svg></div>' : '') +
     '</div>';
@@ -191,7 +192,9 @@ function chrome(v, {backLabel, title, filter, track} = {}) {
   }
   const titleEl = nav.querySelector('.title');
   if (title) { titleEl.textContent = title; titleEl.classList.add('on'); }
+  if (brand) nav.querySelector('.brand').textContent = brand;
   if (filter) nav.querySelector('.trail').appendChild(filter);
+  if (links) nav.querySelector('.bar').appendChild(links);
 
   const sc = document.createElement('div');
   sc.className = 'scroll';
@@ -223,19 +226,45 @@ function dayHeader(label, first) {
 }
 
 /* ── screens ──────────────────────────────────────────────────────────── */
-function filterControl(onChange) {
-  const sel = document.createElement('select');
+function lensOptions() {
   const now = new Date();
   const up = forward(DATA.events, now).flatMap(d =>
     d.items.flatMap(i => i.kind === 'event' ? [i.event] : i.sessions));
-  const sports = [...new Set(up.map(e => e.sport))].sort();
-  const opts = [['all','All']];
-  if (up.some(e => e.lithuanian)) opts.push(['lithuania','Lithuania']);
-  sports.forEach(s => opts.push(['sport:' + s, s]));
-  sel.innerHTML = opts.map(([v,l]) => '<option value="' + v + '">' + l + '</option>').join('');
+  const opts = [['all', 'All']];
+  if (up.some(e => e.lithuanian)) opts.push(['lithuania', 'Lithuania']);
+  [...new Set(up.map(e => e.sport))].sort().forEach(s => opts.push(['sport:' + s, s]));
+  return opts;
+}
+
+function pickLens(value, onChange) {
+  lens = value;
+  subSport = null;
+  onChange();
+}
+
+/* Phone: one glyph that costs no vertical space. */
+function filterControl(onChange) {
+  const sel = document.createElement('select');
+  sel.innerHTML = lensOptions()
+    .map(([v, l]) => '<option value="' + v + '">' + l + '</option>').join('');
   sel.value = lens;
-  sel.onchange = () => { lens = sel.value; subSport = null; onChange(); };
+  sel.onchange = () => pickLens(sel.value, onChange);
   return sel;
+}
+
+/* Wide screen: the same choices, laid out as a header. Hiding the main
+   personalisation behind an icon makes sense on a phone and nowhere else. */
+function filterLinks(onChange) {
+  const nav = document.createElement('nav');
+  nav.className = 'links';
+  for (const [value, label] of lensOptions()) {
+    const b = document.createElement('button');
+    b.className = lens === value ? 'on' : '';
+    b.textContent = label;
+    b.onclick = () => pickLens(value, onChange);
+    nav.append(b);
+  }
+  return nav;
 }
 
 function visible() {
@@ -278,7 +307,13 @@ function chipRow(onChange) {
 function today(v) {
   v.innerHTML = '';
   const now = new Date();
-  const sc = chrome(v, {filter: filterControl(() => today(v)), track: true});
+  const redraw = () => today(v);
+  const sc = chrome(v, {
+    brand: 'Sportas šiandien',
+    filter: filterControl(redraw),
+    links: filterLinks(redraw),
+    track: true,
+  });
 
   if (lens === 'lithuania') {
     const chips = chipRow(() => today(v));
