@@ -4,7 +4,7 @@
    Online you always get the current build; offline you get the last good one. */
 const CACHE = 'sc-v1';
 const FILES = ['./', 'index.html', 'app.js', 'events.json',
-               'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
+               'manifest.webmanifest', 'icon-32.png', 'icon-48.png', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE)
