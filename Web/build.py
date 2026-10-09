@@ -181,7 +181,7 @@ def convert(raw, src):
     if src["layout"] == "versus":
         title, tag = extract_tag(title)
         if tag:
-            competition = tag
+            competition = S.TAGS.get(tag, tag)
     elif src["layout"] == "session":
         if " - " in title:
             occasion, title = title.rsplit(" - ", 1)

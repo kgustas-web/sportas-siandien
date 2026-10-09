@@ -122,7 +122,7 @@ final class Schedule {
             // A trailing [TAG] names the competition better than the feed does.
             let (stripped, tag) = ICS.extractTag(title)
             title = stripped
-            if let tag { competition = tag }
+            if let tag { competition = competitionTags[tag] ?? tag }
 
         case .session:
             // "Parent - Part" splits into an occasion and the part itself.

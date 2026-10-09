@@ -88,6 +88,15 @@ let notableClubs: [String] = [
     "Manchester United", "Tottenham", "Atlético", "Atletico", "Dortmund",
 ]
 
+/// The football feeds tag a fixture with a short code — "Ajax - PSV [CL]" —
+/// and that code becomes the competition. Spelled out because the name is
+/// read on its own, as a filter. An unknown code is left as it is.
+let competitionTags: [String: String] = [
+    "CL": "Champions League",
+    "EL": "Europa League",
+    "Conf": "Conference League",
+]
+
 // MARK: - Where events come from
 
 let sources: [Source] = [

@@ -234,3 +234,32 @@ Append-only. Newest last. Format: date · decision · alternatives · reason · 
 - **Decision:** real iPhone app, SwiftUI, no dependencies, fixtures as Swift literals in one file. Architecture is explicitly not a priority.
 - **Reason:** the biggest unknown is no longer the design, it is whether the app gets used daily. A month of real use outweighs further discussion.
 - **Decided by:** Gustas.
+
+## 2026-10-09 · The lens is navigation, what sits under it is a filter, and they look different
+- **Decision:** the lens (All, Lithuania, a sport) is set as words in the bar at every width. Its parts are a row of small pills in the page: Lithuania divides by sport, a sport by competition. All has no second row.
+- **Alternatives:** two rows of pills (what shipped — nothing said which row was in charge); one row that drills in, the parent collapsing to a single pill (costs two taps to change lens).
+- **Reason:** on a phone both levels were identical pills under an empty 44px bar. The lens now is the bar.
+- **Cost, named:** the bar no longer shows which day you have scrolled to. The wide layout never did.
+- **Decided by:** Gustas (problem), Claude (shape). Confirmed by Gustas.
+
+## 2026-10-09 · Browse is removed; its counts move onto the pills
+- **Decision:** no Browse screen. Lens plus pill reaches the same sport → competition → fixtures list in place, and each pill carries how many fixtures are still to come.
+- **Reason:** subtract before adding. Browse answered the same question three screens away and cost a permanent row above Today.
+- **Exception:** a sport whose parts are already single rows in the timeline (Formula 1 weekends) gets no pills — they would be a second copy of the list.
+- **Decided by:** Gustas.
+
+## 2026-10-09 · Earlier follows the lens
+- **Decision:** the "from earlier" count and list are scoped to the current lens and pill.
+- **Reason:** it said "13 from earlier" inside Lithuania when none of the 13 were Lithuanian. A lens is a scope; a number that ignores it is wrong.
+- **Decided by:** Claude. Confirmed by Gustas.
+
+## 2026-10-09 · Feed competition codes are spelled out
+- **Decision:** `[CL]`, `[EL]`, `[Conf]` become Champions League, Europa League, Conference League (`TAGS` in `Web/sources.py`, `competitionTags` in the app). Unknown codes pass through unchanged.
+- **Reason:** the competition name is now read on its own as a pill, not only as small print.
+- **Decided by:** Claude. Confirmed by Gustas.
+
+## 2026-10-09 · Counts stay on the Lithuania pills only
+- **Decision:** a pill shows a count inside Lithuania and nowhere else.
+- **Alternatives:** counts on every pill (first build); no counts.
+- **Reason:** "Gymnastics 1" says there is one thing and not to miss it. "EuroLeague 373" is the size of a feed, not a judgement about any evening.
+- **Decided by:** Gustas, on Claude's challenge.

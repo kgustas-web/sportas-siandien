@@ -58,6 +58,16 @@ SOURCES = [
     },
 ]
 
+# The football feeds tag a fixture with a short code — "Ajax - PSV [CL]" —
+# and that code becomes the competition. Spelled out here because the name
+# is now read on its own, as a filter, not only as small print under a row.
+# An unknown code is left as it is rather than guessed at.
+TAGS = {
+    "CL": "Champions League",
+    "EL": "Europa League",
+    "Conf": "Conference League",
+}
+
 # ── Follows ──────────────────────────────────────────────────────────────
 FOLLOWS = [
     ["BC Žalgiris", "Zalgiris Kaunas", "Žalgiris Kaunas"],

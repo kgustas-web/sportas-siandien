@@ -5,7 +5,7 @@
 const CHEV = '›';
 let DATA = { events: [], channels: {}, problems: [] };
 let lens = 'all';
-let subSport = null;   // a second cut, only inside Lithuania
+let sub = null;        // a second cut inside a lens: a sport, or a competition
 const stack = document.getElementById('stack');
 
 /* ── time ─────────────────────────────────────────────────────────────── */
@@ -174,8 +174,8 @@ function pop() {
   top.addEventListener('animationend', () => top.remove(), {once:true});
 }
 
-/* Builds a nav bar. `track` turns on day-tracking against .daymark elements. */
-function chrome(v, {backLabel, title, links, brand, track} = {}) {
+/* Builds a nav bar. */
+function chrome(v, {backLabel, title, links, brand} = {}) {
   const nav = document.createElement('div');
   nav.className = 'nav';
   nav.innerHTML = '<div class="navinner"><div class="bar">' +
@@ -204,22 +204,13 @@ function chrome(v, {backLabel, title, links, brand, track} = {}) {
 
   sc.addEventListener('scroll', () => {
     nav.classList.toggle('edge', sc.scrollTop > 4);
-    if (!track) return;
-    // The block straddling the top of the screen is the day you are reading.
-    let label = null;
-    for (const m of inner.querySelectorAll('.daymark')) {
-      if (m.getBoundingClientRect().top < 60) label = m.dataset.label;
-    }
-    if (label) { titleEl.textContent = label; titleEl.classList.add('on'); }
-    else titleEl.classList.remove('on');
   }, {passive:true});
   return inner;
 }
 
 function dayHeader(label, first) {
   const h = document.createElement('h1');
-  h.className = 'day daymark' + (first ? ' first' : '');
-  h.dataset.label = label;
+  h.className = 'day' + (first ? ' first' : '');
   h.textContent = label;
   return h;
 }
@@ -229,9 +220,7 @@ function dayHeader(label, first) {
    weightlifting are in the app because Lithuanians turn up there, so they
    belong under Lithuania, not beside Basketball. */
 function lensOptions() {
-  const now = new Date();
-  const up = forward(DATA.events, now).flatMap(d =>
-    d.items.flatMap(i => i.kind === 'event' ? [i.event] : i.sessions));
+  const up = upcoming(DATA.events, new Date());
   const core = new Set(DATA.coreSports || []);
   const opts = [['all', 'All']];
   if (up.some(inLithuania)) opts.push(['lithuania', 'Lithuania']);
@@ -241,13 +230,20 @@ function lensOptions() {
   return opts;
 }
 
+/// Everything the timeline still has to show: today onwards, not expired.
+function upcoming(events, now) {
+  const today = day0(now);
+  return events.filter(e => state(e, now) !== 'gone' && day0(e.start) >= today);
+}
+
 function pickLens(value, onChange) {
   lens = value;
-  subSport = null;
+  sub = null;
   onChange();
 }
 
-/* One control, both sizes: pills on a phone, header links on a wide screen. */
+/* One control, both sizes: words in the bar on a phone, header links on a
+   wide screen. */
 function filterLinks(onChange) {
   const nav = document.createElement('nav');
   nav.className = 'links';
@@ -275,69 +271,106 @@ function inLithuania(e) {
   return e.lithuanian || !core.has(e.sport);
 }
 
-function visible() {
+/* The lens on its own, before the second cut. */
+function scope() {
   if (lens === 'all') return DATA.events;
-  if (lens === 'lithuania') {
-    const lt = DATA.events.filter(inLithuania);
-    return subSport ? lt.filter(e => e.sport === subSport) : lt;
-  }
+  if (lens === 'lithuania') return DATA.events.filter(inLithuania);
   const sport = lens.slice(6);
   return DATA.events.filter(e => e.sport === sport);
 }
 
-/// Sports present inside the current scope, so the chips never offer an
-/// empty result.
-function sportsWithin(events, now) {
-  const up = forward(events, now).flatMap(d =>
-    d.items.flatMap(i => i.kind === 'event' ? [i.event] : i.sessions));
-  return [...new Set(up.map(e => e.sport))].sort();
+/* What a lens divides into, one level down: Lithuania by sport, a sport by
+   competition. All has nothing under it — its parts are the bar above. */
+function subKey() {
+  if (lens === 'lithuania') return e => e.sport;
+  if (lens.startsWith('sport:')) return e => e.competition;
+  return null;
 }
 
-function chipRow(onChange) {
-  const now = new Date();
-  const sports = sportsWithin(DATA.events.filter(inLithuania), now);
-  if (sports.length < 2) return null;   // nothing to choose between
+function visible() {
+  const key = subKey();
+  return sub && key ? scope().filter(e => key(e) === sub) : scope();
+}
 
+/* The parts of the current lens. This replaced Browse, which answered the
+   same question three screens away. Only parts with something ahead are
+   offered, so no pill leads nowhere.
+
+   Counts appear inside Lithuania only. There "Gymnastics 1" says something:
+   one thing, do not miss it. On a sport the number is the size of a feed —
+   373 EuroLeague games — which is not a judgement about any evening. */
+function chipRow(onChange) {
+  const key = subKey();
+  if (!key) return null;
+  const up = upcoming(scope(), new Date());
+  const counts = new Map();
+  up.forEach(e => counts.set(key(e), (counts.get(key(e)) || 0) + 1));
+  if (counts.size < 2) return null;   // nothing to choose between
+  // A race weekend is already one row in the timeline. Eight pills naming
+  // the same eight rows would be a second copy of the list, not a filter.
+  if (up.every(e => e.occasion === key(e))) return null;
+
+  const counted = lens === 'lithuania';
   const row = document.createElement('div');
   row.className = 'chips';
-  const make = (label, value) => {
+  const make = (label, value, n) => {
     const b = document.createElement('button');
-    b.className = 'chip' + (subSport === value ? ' on' : '');
-    b.textContent = label;
-    b.onclick = () => { subSport = value; onChange(); };
+    b.className = 'chip' + (sub === value ? ' on' : '');
+    b.innerHTML = '<span></span>' + (counted ? '<span class="c"></span>' : '');
+    b.firstChild.textContent = label;
+    if (counted) b.lastChild.textContent = n;
+    b.onclick = () => { sub = value; onChange(); };
     return b;
   };
-  row.append(make('All sports', null));
-  sports.forEach(s => row.append(make(s, s)));
+  row.append(make(lens === 'lithuania' ? 'All sports' : 'All ' + lens.slice(6).toLowerCase(),
+                  null, up.length));
+  [...counts.keys()].sort().forEach(k => row.append(make(k, k, counts.get(k))));
   return row;
 }
 
+/* A redraw rebuilds the rows, which would throw a scrolled row back to its
+   start and can leave the thing just picked off-screen. */
+function settle(row, left) {
+  if (!row) return;
+  row.scrollLeft = left || 0;
+  const on = row.querySelector('.on');
+  if (!on) return;
+  const r = row.getBoundingClientRect(), o = on.getBoundingClientRect();
+  if (o.left < r.left + 20) row.scrollLeft += o.left - r.left - 20;
+  else if (o.right > r.right - 28) row.scrollLeft += o.right - r.right + 28;
+}
+
 function today(v) {
+  const was = sel => v.querySelector(sel)?.scrollLeft;
+  const kept = {links: was('.links'), chips: was('.chips')};
   v.innerHTML = '';
   const now = new Date();
   const redraw = () => today(v);
   const sc = chrome(v, {
     brand: 'Sportas šiandien',
     links: filterLinks(redraw),
-    track: true,
   });
 
-  if (lens === 'lithuania') {
-    const chips = chipRow(() => today(v));
-    if (chips) sc.append(chips);
-  }
+  const chips = chipRow(redraw);
+  if (chips) sc.append(chips);
+  requestAnimationFrame(() => {
+    settle(v.querySelector('.links'), kept.links);
+    settle(chips, kept.chips);
+  });
 
-  const past = earlier(DATA.events, now);
-  const pastCount = past.reduce((n,d) => n + d.items.length, 0);
+  // Earlier follows the lens: inside Lithuania it counts Lithuania.
+  const shown = visible();
+  const pastCount = earlier(shown, now).reduce((n,d) => n + d.items.length, 0);
   if (pastCount) {
-    sc.append(utilRow(pastCount === 1 ? '1 from earlier' : pastCount + ' from earlier',
-      () => mount(earlierScreen, true)), sep());
+    const b = utilRow(pastCount + ' from earlier',
+      () => mount(w => earlierScreen(w, shown), true));
+    b.classList.add('quiet');
+    sc.append(b);
   }
-  sc.append(utilRow('Browse', () => mount(browseScreen, true)), sep());
 
-  const days = forward(visible(), now);
+  const days = forward(shown, now);
   if (!days.some(d => +d.date === +day0(now))) {
-    const next = visible().filter(e => e.start > now).sort((a,b) => a.start - b.start)[0];
+    const next = shown.filter(e => e.start > now).sort((a,b) => a.start - b.start)[0];
     const box = document.createElement('div');
     box.className = 'verdict';
     box.innerHTML = '<div class="a"></div>' + (next ? '<div class="b"></div>' : '');
@@ -384,48 +417,15 @@ function occasionRow(it, now) {
   return b;
 }
 
-function earlierScreen(v) {
+function earlierScreen(v, events) {
   const now = new Date();
   const sc = chrome(v, {backLabel: 'Today', title: 'Earlier'});
-  earlier(DATA.events, now).forEach((d, di) => {
+  earlier(events, now).forEach((d, di) => {
     sc.append(dayHeader(dayLabel(d.date), di === 0));
     d.items.forEach((it, i) => {
       sc.append(eventRow(it.event, now, openEvent));
       if (i < d.items.length - 1) sc.append(sep());
     });
-  });
-}
-
-/* Browse: a different question from the timeline, so it gets its own place. */
-function browseScreen(v) {
-  const sc = chrome(v, {backLabel: 'Today', title: 'Browse'});
-  const h = document.createElement('div'); h.className = 'large'; h.textContent = 'Browse';
-  sc.append(h);
-  const now = new Date();
-  const up = DATA.events.filter(e => e.start >= day0(now));
-  const bySport = {};
-  up.forEach(e => (bySport[e.sport] ||= []).push(e));
-  Object.keys(bySport).sort().forEach((sport, i, arr) => {
-    sc.append(utilRow(sport, () => mount(w => competitions(w, sport, bySport[sport]), true),
-                      bySport[sport].length));
-    if (i < arr.length - 1) sc.append(sep());
-  });
-}
-
-function competitions(v, sport, events) {
-  const sc = chrome(v, {backLabel: 'Browse', title: sport});
-  const h = document.createElement('div'); h.className = 'large'; h.textContent = sport;
-  sc.append(h);
-  const by = {};
-  events.forEach(e => (by[e.competition] ||= []).push(e));
-  const names = Object.keys(by).sort((a,b) =>
-    Math.min(...by[a].map(e => e.start)) - Math.min(...by[b].map(e => e.start)));
-  names.forEach((name, i) => {
-    const next = new Date(Math.min(...by[name].map(e => +e.start)));
-    sc.append(utilRow(name, () => mount(w => fixtures(w, name, by[name], sport), true),
-                      by[name].length,
-                      shortDate(next)));
-    if (i < names.length - 1) sc.append(sep());
   });
 }
 
