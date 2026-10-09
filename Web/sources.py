@@ -91,13 +91,18 @@ REASONS = {
 # A curated roster, not a database. Hedged wording on purpose: no feed
 # carries an entry list, so the app cannot know who actually entered.
 ATHLETES = [
-    {"name": "Mykolas Alekna",
+    {"name": "Mykolas Alekna", "sport": "Athletics",
      "note": "Mykolas Alekna holds the discus world record. He usually throws here.",
      "competitions": ["Diamond League", "World Athletics", "European Athletics",
-                      "Olympic Athletics"]},
-    {"name": "Rūta Meilutytė",
+                      "World Championships", "European Championships"]},
+    {"name": "Rūta Meilutytė", "sport": "Swimming",
      "note": "Rūta Meilutytė, Olympic champion and world record holder over 50m breaststroke.",
-     "competitions": ["World Aquatics", "European Aquatics", "Olympic Swimming"]},
+     "competitions": ["World Aquatics", "European Aquatics",
+                      "World Championships", "European Championships"]},
+
+    {"name": "Nedas Grikinis", "sport": "Gymnastics",
+     "note": "Nedas Grikinis is Lithuania's entry, qualified through the European all-around.",
+     "competitions": ["World Championships", "European Championships"]},
 ]
 
 CHANNELS = {
@@ -150,10 +155,21 @@ MANUAL = [
     # Not marked Lithuanian: entry lists are not out, and claiming a
     # Lithuanian is competing when that is unknown is the kind of wrong
     # the reason line exists to prevent.
+    # Marked Lithuanian on evidence, not on hope: Nedas Grikinis qualified
+    # through the top 24 all-around at the European Championships. His line
+    # in ATHLETES attaches itself as the reason.
     {"title": "World Artistic Gymnastics Championships",
      "competition": "World Championships", "sport": "Gymnastics",
-     "start": (2026, 10, 17, 10, 0), "minutes": 480,
+     "start": (2026, 10, 17, 10, 0), "minutes": 480, "lithuanian": True,
      "note": "Rotterdam, 17–25 October. Daily session times not published."},
+
+    # An Olympic qualifier, so it matters more than a normal worlds. Not
+    # marked Lithuanian — the entry list is not out, and the same rule
+    # applies here as applied to gymnastics before Grikinis was confirmed.
+    {"title": "World Weightlifting Championships",
+     "competition": "World Championships", "sport": "Weightlifting",
+     "start": (2026, 10, 27, 10, 0), "minutes": 480,
+     "note": "Ningbo, 27 October – 8 November. Also an Olympic qualifier."},
 ]
 
 TIMEZONE = "Europe/Vilnius"

@@ -52,8 +52,17 @@ let manualEvents: [Event] = [
     //  The Tier 4 case: worth knowing it is on, even without a session
     //  timetable. Not marked Lithuanian — entry lists are not out.
 
+    //  Marked Lithuanian on evidence: Nedas Grikinis qualified through the
+    //  top 24 all-around at the European Championships.
     Event(title: "World Artistic Gymnastics Championships",
           competition: "World Championships", sport: "Gymnastics",
+          lithuanian: true,
           start: d(2026, 10, 17, 10, 0), minutes: 480,
           note: "Rotterdam, 17–25 October. Daily session times not published."),
+
+    //  An Olympic qualifier. Not marked Lithuanian — the entry list is not out.
+    Event(title: "World Weightlifting Championships",
+          competition: "World Championships", sport: "Weightlifting",
+          start: d(2026, 10, 27, 10, 0), minutes: 480,
+          note: "Ningbo, 27 October – 8 November. Also an Olympic qualifier."),
 ]

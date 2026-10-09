@@ -64,7 +64,7 @@ final class Schedule {
         var out = manualEvents.map { event -> Event in
             var e = event
             if e.reason == nil {
-                e.reason = reason(for: e.title, competition: e.competition)
+                e.reason = reason(for: e.title, competition: e.competition, sport: e.sport)
             }
             if !e.lithuanian {
                 e.lithuanian = isLithuanian(e.title) || isLithuanian(e.competition)
@@ -149,7 +149,7 @@ final class Schedule {
             start: raw.start,
             minutes: max(30, min(minutes, 300)),
             channel: feed.channel,
-            reason: reason(for: title, competition: competition),
+            reason: reason(for: title, competition: competition, sport: feed.sport),
             occasion: feed.groupsParts ? occasion : nil
         )
     }
@@ -187,12 +187,13 @@ final class Schedule {
 
     /// Your own line first. Failing that, an athlete who competes here —
     /// which is how an unfamiliar name arrives with an explanation attached.
-    private func reason(for title: String, competition: String) -> String? {
+    private func reason(for title: String, competition: String, sport: String) -> String? {
         if let mine = reasons.first(where: { title.localizedCaseInsensitiveContains($0.key) }) {
             return mine.value
         }
         let haystack = title + " " + competition
         return athletes.first { athlete in
+            athlete.sport == sport &&
             athlete.competitions.contains { haystack.localizedCaseInsensitiveContains($0) }
         }?.note
     }

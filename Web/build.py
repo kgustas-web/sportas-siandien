@@ -118,12 +118,15 @@ def is_lithuanian(text):
         return True
     return any(a["name"].lower() in text.lower() for a in S.ATHLETES)
 
-def reason_for(title, competition):
+def reason_for(title, competition, sport=None):
     for key, value in S.REASONS.items():
         if key.lower() in title.lower():
             return value
     hay = f"{title} {competition}".lower()
     for a in S.ATHLETES:
+        # Sport must match: competition names collide across sports.
+        if sport and a.get("sport") and a["sport"] != sport:
+            continue
         if any(c.lower() in hay for c in a["competitions"]):
             return a["note"]
     return None
@@ -193,7 +196,7 @@ def convert(raw, src):
     if raw.get("end"):
         minutes = max(30, min(int((raw["end"] - raw["start"]).total_seconds() / 60), 300))
 
-    reason = reason_for(title, competition)
+    reason = reason_for(title, competition, src["sport"])
     return {
         "title": title,
         "competition": competition,
@@ -212,13 +215,16 @@ def manual_events():
     out = []
     for m in S.MANUAL:
         start = datetime(*m["start"], tzinfo=LOCAL)
-        reason = m.get("reason") or reason_for(m["title"], m["competition"])
+        reason = m.get("reason") or reason_for(m["title"], m["competition"], m["sport"])
         out.append({
             "title": m["title"], "competition": m["competition"], "sport": m["sport"],
             "start": start.astimezone(timezone.utc).isoformat(),
             "minutes": m.get("minutes", 120), "channel": m.get("channel"),
             "reason": reason, "note": m.get("note"), "occasion": None,
-            "lithuanian": is_lithuanian(m["title"]) or is_lithuanian(m["competition"]),
+            # A hand-entered event may assert this when research confirms a
+            # Lithuanian is competing but the title does not say so.
+            "lithuanian": m.get("lithuanian",
+                                is_lithuanian(m["title"]) or is_lithuanian(m["competition"])),
             "prominence": prominence(m["title"], reason),
         })
     return out

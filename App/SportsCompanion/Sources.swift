@@ -154,6 +154,9 @@ let sources: [Source] = [
 
 struct Athlete {
     var name: String
+    /// Must match the event's sport. Competition names collide across sports —
+    /// "World Championships" is gymnastics, weightlifting and a dozen others —
+    /// and without this a gymnast's line lands on a weightlifting event.
     var sport: String
     /// The educational line. Assume the reader has never heard of them.
     var note: String
@@ -162,14 +165,19 @@ struct Athlete {
 }
 
 let athletes: [Athlete] = [
-    Athlete(name: "Mykolas Alekna", sport: "Discus",
+    Athlete(name: "Mykolas Alekna", sport: "Athletics",
             note: "Mykolas Alekna holds the discus world record. He usually throws here.",
             competitions: ["Diamond League", "World Athletics", "European Athletics",
-                           "Olympic Athletics"]),
+                           "World Championships", "European Championships"]),
 
     Athlete(name: "Rūta Meilutytė", sport: "Swimming",
             note: "Rūta Meilutytė, Olympic champion and world record holder over 50m breaststroke.",
-            competitions: ["World Aquatics", "European Aquatics", "Olympic Swimming"]),
+            competitions: ["World Aquatics", "European Aquatics",
+                           "World Championships", "European Championships"]),
+
+    Athlete(name: "Nedas Grikinis", sport: "Gymnastics",
+            note: "Nedas Grikinis is Lithuania's entry, qualified through the European all-around.",
+            competitions: ["World Championships", "European Championships"]),
 ]
 
 // No feed carries judgement, so the reason line stays yours.
