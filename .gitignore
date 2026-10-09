@@ -1,0 +1,10 @@
+.DS_Store
+App/build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+__pycache__/
+SportsCompanion.zip
+
+# Subscription link that is not ours to publish. See Secrets.example.swift.
+App/SportsCompanion/Secrets.swift

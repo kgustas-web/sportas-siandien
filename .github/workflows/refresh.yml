@@ -1,0 +1,47 @@
+name: Refresh schedule
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"     # four times a day, off the hour
+  workflow_dispatch:            # and a manual button
+  push:
+    branches: [main]
+    paths: ["Web/**", ".github/workflows/refresh.yml"]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: Fetch and clean the feeds
+        working-directory: Web
+        env:
+          EUROLEAGUE_ICS: ${{ secrets.EUROLEAGUE_ICS }}
+        run: python3 build.py
+
+      # The build exits non-zero if anything score-shaped survives cleaning,
+      # so a leak fails the run rather than shipping.
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: Web/site }
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
