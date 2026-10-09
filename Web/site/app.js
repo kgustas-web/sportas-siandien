@@ -5,6 +5,7 @@
 const CHEV = '›';
 let DATA = { events: [], channels: {}, problems: [] };
 let lens = 'all';
+let subSport = null;   // a second cut, only inside Lithuania
 const stack = document.getElementById('stack');
 
 /* ── time ─────────────────────────────────────────────────────────────── */
@@ -233,21 +234,56 @@ function filterControl(onChange) {
   sports.forEach(s => opts.push(['sport:' + s, s]));
   sel.innerHTML = opts.map(([v,l]) => '<option value="' + v + '">' + l + '</option>').join('');
   sel.value = lens;
-  sel.onchange = () => { lens = sel.value; onChange(); };
+  sel.onchange = () => { lens = sel.value; subSport = null; onChange(); };
   return sel;
 }
 
 function visible() {
   if (lens === 'all') return DATA.events;
-  if (lens === 'lithuania') return DATA.events.filter(e => e.lithuanian);
+  if (lens === 'lithuania') {
+    const lt = DATA.events.filter(e => e.lithuanian);
+    return subSport ? lt.filter(e => e.sport === subSport) : lt;
+  }
   const sport = lens.slice(6);
   return DATA.events.filter(e => e.sport === sport);
+}
+
+/// Sports present inside the current scope, so the chips never offer an
+/// empty result.
+function sportsWithin(events, now) {
+  const up = forward(events, now).flatMap(d =>
+    d.items.flatMap(i => i.kind === 'event' ? [i.event] : i.sessions));
+  return [...new Set(up.map(e => e.sport))].sort();
+}
+
+function chipRow(onChange) {
+  const now = new Date();
+  const sports = sportsWithin(DATA.events.filter(e => e.lithuanian), now);
+  if (sports.length < 2) return null;   // nothing to choose between
+
+  const row = document.createElement('div');
+  row.className = 'chips';
+  const make = (label, value) => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (subSport === value ? ' on' : '');
+    b.textContent = label;
+    b.onclick = () => { subSport = value; onChange(); };
+    return b;
+  };
+  row.append(make('All sports', null));
+  sports.forEach(s => row.append(make(s, s)));
+  return row;
 }
 
 function today(v) {
   v.innerHTML = '';
   const now = new Date();
   const sc = chrome(v, {filter: filterControl(() => today(v)), track: true});
+
+  if (lens === 'lithuania') {
+    const chips = chipRow(() => today(v));
+    if (chips) sc.append(chips);
+  }
 
   const past = earlier(DATA.events, now);
   const pastCount = past.reduce((n,d) => n + d.items.length, 0);
@@ -418,4 +454,20 @@ async function boot() {
   mount(today, false);
 }
 boot();
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+/* The first service worker shipped was cache-first, and a browser that
+   installed it kept serving the old build no matter how many times the page
+   was reloaded. Network-first fixed the rule; this makes the switch happen
+   without anyone having to know about it: check for a new worker on every
+   load, and reload once when one takes over. */
+if ('serviceWorker' in navigator) {
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (reloading) return;
+    reloading = true;
+    location.reload();
+  });
+  navigator.serviceWorker.register('sw.js')
+    .then(reg => reg.update())
+    .catch(() => {});
+}

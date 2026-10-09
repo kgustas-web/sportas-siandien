@@ -47,4 +47,13 @@ let manualEvents: [Event] = [
     Event(title: "Lietuva vs Serbija", competition: "World Cup qualifiers",
           sport: "Basketball", start: d(2026, 11, 26, 18, 0), minutes: 115,
           note: "Tip-off time not yet confirmed."),
+
+    // ── Major international events ────────────────────────────────────
+    //  The Tier 4 case: worth knowing it is on, even without a session
+    //  timetable. Not marked Lithuanian — entry lists are not out.
+
+    Event(title: "World Artistic Gymnastics Championships",
+          competition: "World Championships", sport: "Gymnastics",
+          start: d(2026, 10, 17, 10, 0), minutes: 480,
+          note: "Rotterdam, 17–25 October. Daily session times not published."),
 ]

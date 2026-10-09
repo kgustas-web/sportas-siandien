@@ -140,6 +140,20 @@ MANUAL = [
     {"title": "Lietuva vs Serbija", "competition": "World Cup qualifiers",
      "sport": "Basketball", "start": (2026, 11, 26, 18, 0), "minutes": 115,
      "note": "Tip-off time not yet confirmed."},
+
+    # ── Major international events ────────────────────────────────────
+    # The Tier 4 case: worth knowing it is on, even without a session
+    # timetable. Entered on its opening day with the range in the note,
+    # because for a nine-day championship the useful fact is that it
+    # starts, not what time a given rotation begins.
+    #
+    # Not marked Lithuanian: entry lists are not out, and claiming a
+    # Lithuanian is competing when that is unknown is the kind of wrong
+    # the reason line exists to prevent.
+    {"title": "World Artistic Gymnastics Championships",
+     "competition": "World Championships", "sport": "Gymnastics",
+     "start": (2026, 10, 17, 10, 0), "minutes": 480,
+     "note": "Rotterdam, 17–25 October. Daily session times not published."},
 ]
 
 TIMEZONE = "Europe/Vilnius"

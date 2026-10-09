@@ -82,6 +82,20 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .inner{max-width:600px;margin:0 auto;width:100%}
 .nav .bar{max-width:600px;margin:0 auto;width:100%}
 
+/* A second filter, and only when the first one asks for it: pick Lithuania
+   and the sports inside it appear. Not a permanent band. */
+.chips{
+  display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;
+  padding:10px var(--pad) 4px;
+}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:none;padding:7px 14px;border-radius:999px;font-size:15px;
+  background:var(--fill);color:var(--label2);white-space:nowrap;
+}
+.chip.on{background:var(--label);color:#000;font-weight:500}
+.chip:active{opacity:.7}
+
 /* ── content ── */
 h1.day{
   font-size:34px;font-weight:700;letter-spacing:-.022em;line-height:1.12;
