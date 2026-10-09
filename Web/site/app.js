@@ -175,17 +175,17 @@ function pop() {
 }
 
 /* Builds a nav bar. `track` turns on day-tracking against .daymark elements. */
-function chrome(v, {backLabel, title, filter, links, brand, track} = {}) {
+function chrome(v, {backLabel, title, links, brand, track} = {}) {
   const nav = document.createElement('div');
   nav.className = 'nav';
-  nav.innerHTML = '<div class="bar">' +
+  nav.innerHTML = '<div class="navinner"><div class="bar">' +
     (backLabel
       ? '<button class="back"><svg viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"/></svg><span></span></button>'
       : '') +
     (brand ? '<span class="brand"></span>' : '') +
     '<div class="title"></div>' +
-    (filter ? '<div class="trail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 9.5h8M9.5 12h5M11 14.5h2"/></svg></div>' : '') +
-    '</div>';
+    '</div></div>';
+  if (links) nav.classList.add('tall');
   if (backLabel) {
     nav.querySelector('.back span').textContent = backLabel;
     nav.querySelector('.back').onclick = pop;
@@ -193,8 +193,7 @@ function chrome(v, {backLabel, title, filter, links, brand, track} = {}) {
   const titleEl = nav.querySelector('.title');
   if (title) { titleEl.textContent = title; titleEl.classList.add('on'); }
   if (brand) nav.querySelector('.brand').textContent = brand;
-  if (filter) nav.querySelector('.trail').appendChild(filter);
-  if (links) nav.querySelector('.bar').appendChild(links);
+  if (links) nav.querySelector('.navinner').appendChild(links);
 
   const sc = document.createElement('div');
   sc.className = 'scroll';
@@ -248,18 +247,7 @@ function pickLens(value, onChange) {
   onChange();
 }
 
-/* Phone: one glyph that costs no vertical space. */
-function filterControl(onChange) {
-  const sel = document.createElement('select');
-  sel.innerHTML = lensOptions()
-    .map(([v, l]) => '<option value="' + v + '">' + l + '</option>').join('');
-  sel.value = lens;
-  sel.onchange = () => pickLens(sel.value, onChange);
-  return sel;
-}
-
-/* Wide screen: the same choices, laid out as a header. Hiding the main
-   personalisation behind an icon makes sense on a phone and nowhere else. */
+/* One control, both sizes: pills on a phone, header links on a wide screen. */
 function filterLinks(onChange) {
   const nav = document.createElement('nav');
   nav.className = 'links';
@@ -316,7 +304,6 @@ function today(v) {
   const redraw = () => today(v);
   const sc = chrome(v, {
     brand: 'Sportas šiandien',
-    filter: filterControl(redraw),
     links: filterLinks(redraw),
     track: true,
   });

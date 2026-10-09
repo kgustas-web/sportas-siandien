@@ -67,6 +67,10 @@ FOLLOWS = [
     ["Lithuania", "Lietuva", "Litouwen", "Litauen", "Lituanie"],
 ]
 
+# Sports you follow without a feed existing for them. Keeps them top level
+# alongside the ones a Source declares, rather than stranded under Lithuania.
+FOLLOWED_SPORTS = ["Biathlon"]
+
 LITHUANIAN = ["Zalgiris", "Žalgiris", "Lithuania", "Lietuva",
               "Litouwen", "Litauen", "Lituanie"]
 
@@ -172,6 +176,50 @@ MANUAL = [
      "note": "Ningbo, 27 October – 8 November. An Olympic qualifier. "
              "Lithuania sent six lifters to the 2025 worlds; the 2026 entry "
              "list is not published yet."},
+
+    # ── Biathlon ──────────────────────────────────────────────────────
+    # No feed exists: the IBU publishes no iCalendar and the third-party
+    # ones resolve to an app, not a file. A feed would be the wrong shape
+    # anyway — a season is 78 individual races, which would flood the
+    # timeline the way an ungrouped F1 weekend did. Eleven rounds is the
+    # grain that is actually useful. Calendar from the published IBU
+    # schedule; per-race times are not entered because they are not
+    # published as a set.
+
+    {"title": "Kontiolahti", "competition": "Biathlon World Cup", "sport": "Biathlon",
+     "start": (2026, 11, 24, 14, 0), "minutes": 180,
+     "note": "24–29 November. Race times not listed here."},
+    {"title": "Hochfilzen", "competition": "Biathlon World Cup", "sport": "Biathlon",
+     "start": (2026, 12, 1, 14, 0), "minutes": 180,
+     "note": "1–6 December. Race times not listed here."},
+    {"title": "Annecy–Le Grand-Bornand", "competition": "Biathlon World Cup", "sport": "Biathlon",
+     "start": (2026, 12, 8, 14, 0), "minutes": 180,
+     "note": "8–13 December. Race times not listed here."},
+    {"title": "Pokljuka", "competition": "Biathlon World Cup", "sport": "Biathlon",
+     "start": (2026, 12, 31, 14, 0), "minutes": 180,
+     "note": "31 December – 3 January. Race times not listed here."},
+    {"title": "Ruhpolding", "competition": "Biathlon World Cup", "sport": "Biathlon",
+     "start": (2027, 1, 5, 14, 0), "minutes": 180,
+     "note": "5–10 January. Race times not listed here."},
+    {"title": "Antholz-Anterselva", "competition": "Biathlon World Cup", "sport": "Biathlon",
+     "start": (2027, 1, 12, 14, 0), "minutes": 180,
+     "note": "12–17 January. Race times not listed here."},
+    {"title": "Nové Město na Moravě", "competition": "Biathlon World Cup", "sport": "Biathlon",
+     "start": (2027, 1, 19, 14, 0), "minutes": 180,
+     "note": "19–24 January. Race times not listed here."},
+    {"title": "Otepää", "competition": "World Championships", "sport": "Biathlon",
+     "start": (2027, 2, 8, 14, 0), "minutes": 180,
+     "reason": "World Championships, in neighbouring Estonia.",
+     "note": "8–21 February. Race times not listed here."},
+    {"title": "Oberhof", "competition": "Biathlon World Cup", "sport": "Biathlon",
+     "start": (2027, 3, 2, 14, 0), "minutes": 180,
+     "note": "2–7 March. Race times not listed here."},
+    {"title": "Östersund", "competition": "Biathlon World Cup", "sport": "Biathlon",
+     "start": (2027, 3, 9, 14, 0), "minutes": 180,
+     "note": "9–14 March. Race times not listed here."},
+    {"title": "Oslo Holmenkollen", "competition": "Biathlon World Cup", "sport": "Biathlon",
+     "start": (2027, 3, 16, 14, 0), "minutes": 180,
+     "note": "16–21 March. Race times not listed here."},
 ]
 
 TIMEZONE = "Europe/Vilnius"

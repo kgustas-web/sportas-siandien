@@ -211,7 +211,9 @@ struct TodayView: View {
     /// Only sports followed in their own right. Gymnastics and weightlifting
     /// are in the app because Lithuanians turn up there, so they belong under
     /// the Lithuania lens rather than beside Basketball.
-    private var coreSports: Set<String> { Set(sources.map(\.sport)) }
+    private var coreSports: Set<String> {
+        Set(sources.map(\.sport)).union(followedSports)
+    }
 
     private var availableSports: [String] {
         Set(upcomingEvents.map(\.sport)).filter { coreSports.contains($0) }.sorted()
