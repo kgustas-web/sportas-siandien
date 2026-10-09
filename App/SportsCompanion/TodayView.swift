@@ -188,7 +188,7 @@ struct TodayView: View {
     private var visible: [Event] {
         switch lens {
         case .all:             return schedule.events
-        case .lithuania:       return schedule.events.filter(\.lithuanian)
+        case .lithuania:       return schedule.events.filter(inLithuania)
         case .sport(let name): return schedule.events.filter { $0.sport == name }
         }
     }
@@ -211,14 +211,19 @@ struct TodayView: View {
     /// Only sports followed in their own right. Gymnastics and weightlifting
     /// are in the app because Lithuanians turn up there, so they belong under
     /// the Lithuania lens rather than beside Basketball.
-    private var coreSports: Set<String> {
-        Set(sources.map(\.sport)).union(followedSports)
+    private var coreSports: Set<String> { Set(sources.map(\.sport)) }
+
+    /// `lithuanian` on an event is evidence and must stay honest. The lens is
+    /// a scope, and it is wider: any sport beyond the ones followed in their
+    /// own right is in the app only because Lithuanians compete there.
+    private func inLithuania(_ e: Event) -> Bool {
+        e.lithuanian || !coreSports.contains(e.sport)
     }
 
     private var availableSports: [String] {
         Set(upcomingEvents.map(\.sport)).filter { coreSports.contains($0) }.sorted()
     }
-    private var hasLithuanian: Bool { upcomingEvents.contains(where: \.lithuanian) }
+    private var hasLithuanian: Bool { upcomingEvents.contains(where: inLithuania) }
 
     private var todayIsEmpty: Bool {
         !days.contains { Calendar.current.isDateInToday($0.date) }

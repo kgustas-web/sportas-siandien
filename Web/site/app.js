@@ -234,7 +234,7 @@ function lensOptions() {
     d.items.flatMap(i => i.kind === 'event' ? [i.event] : i.sessions));
   const core = new Set(DATA.coreSports || []);
   const opts = [['all', 'All']];
-  if (up.some(e => e.lithuanian)) opts.push(['lithuania', 'Lithuania']);
+  if (up.some(inLithuania)) opts.push(['lithuania', 'Lithuania']);
   [...new Set(up.map(e => e.sport))].sort()
     .filter(s => core.has(s))
     .forEach(s => opts.push(['sport:' + s, s]));
@@ -261,10 +261,24 @@ function filterLinks(onChange) {
   return nav;
 }
 
+/* Two different things, kept apart.
+
+   `lithuanian` on an event is evidence: a named Lithuanian, a Lithuanian
+   club, the country. It drives prominence and must stay honest.
+
+   The Lithuania *lens* is a scope, and it is wider. Any sport beyond the
+   ones followed in their own right is in the app only because Lithuanians
+   compete there, so the whole sport belongs in this view — even a biathlon
+   round whose Lithuanian entry has not been announced yet. */
+function inLithuania(e) {
+  const core = new Set(DATA.coreSports || []);
+  return e.lithuanian || !core.has(e.sport);
+}
+
 function visible() {
   if (lens === 'all') return DATA.events;
   if (lens === 'lithuania') {
-    const lt = DATA.events.filter(e => e.lithuanian);
+    const lt = DATA.events.filter(inLithuania);
     return subSport ? lt.filter(e => e.sport === subSport) : lt;
   }
   const sport = lens.slice(6);
@@ -281,7 +295,7 @@ function sportsWithin(events, now) {
 
 function chipRow(onChange) {
   const now = new Date();
-  const sports = sportsWithin(DATA.events.filter(e => e.lithuanian), now);
+  const sports = sportsWithin(DATA.events.filter(inLithuania), now);
   if (sports.length < 2) return null;   // nothing to choose between
 
   const row = document.createElement('div');

@@ -67,10 +67,6 @@ FOLLOWS = [
     ["Lithuania", "Lietuva", "Litouwen", "Litauen", "Lituanie"],
 ]
 
-# Sports you follow without a feed existing for them. Keeps them top level
-# alongside the ones a Source declares, rather than stranded under Lithuania.
-FOLLOWED_SPORTS = ["Biathlon"]
-
 LITHUANIAN = ["Zalgiris", "Žalgiris", "Lithuania", "Lietuva",
               "Litouwen", "Litauen", "Lituanie"]
 

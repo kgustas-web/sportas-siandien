@@ -278,8 +278,10 @@ def main():
         # them. Anything else — gymnastics, weightlifting — is in the app
         # only because Lithuanians turn up there, so it belongs under
         # Lithuania rather than beside Basketball.
-        "coreSports": sorted({src["sport"] for src in S.SOURCES if src["url"]}
-                             | set(getattr(S, "FOLLOWED_SPORTS", []))),
+        # Sports followed in their own right — the ones a feed exists for.
+        # Every other sport is in the app only because Lithuanians compete
+        # there, which is what puts it under the Lithuania lens.
+        "coreSports": sorted({src["sport"] for src in S.SOURCES if src["url"]}),
         "channels": S.CHANNELS,
         "events": events,
         "problems": problems,

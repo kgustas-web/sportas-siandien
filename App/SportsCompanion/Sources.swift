@@ -72,10 +72,6 @@ let follows: [Follow] = [
     Follow("Lithuania", "Lietuva", "Litouwen", "Litauen", "Lituanie"),
 ]
 
-/// Sports followed without a feed existing for them. Keeps them top level
-/// alongside the ones a Source declares.
-let followedSports: [String] = ["Biathlon"]
-
 /// Follows that make an event part of the Lithuania view. The lens cuts across
 /// every sport, which is the point: following a country is a story, not a sport.
 let lithuanianFollows: [String] = [
