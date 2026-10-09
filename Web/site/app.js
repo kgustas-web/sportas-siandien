@@ -120,11 +120,13 @@ function eventRow(e, now, onTap) {
       '<div class="ttlline"><span class="ttl"></span>' +
       (st === 'live' ? '<span class="live"><i></i>On now</span>' : '') + '</div>' +
       (e.reason ? '<div class="why"></div>' : '') +
+      (e.note ? '<div class="n"></div>' : '') +
       '<div class="meta"></div>' +
     '</div></div><span class="chev">' + CHEV + '</span>';
 
   el.querySelector('.ttl').textContent = e.title;
   if (e.reason) el.querySelector('.why').textContent = e.reason;
+  if (e.note) el.querySelector('.n').textContent = e.note;
   el.querySelector('.meta').textContent = meta;
   el.onclick = () => onTap(e);
   return el;
@@ -192,6 +194,9 @@ function chrome(v, {backLabel, title, filter, track} = {}) {
 
   const sc = document.createElement('div');
   sc.className = 'scroll';
+  const inner = document.createElement('div');
+  inner.className = 'inner';
+  sc.append(inner);
   v.append(nav, sc);
 
   sc.addEventListener('scroll', () => {
@@ -199,13 +204,13 @@ function chrome(v, {backLabel, title, filter, track} = {}) {
     if (!track) return;
     // The block straddling the top of the screen is the day you are reading.
     let label = null;
-    for (const m of sc.querySelectorAll('.daymark')) {
+    for (const m of inner.querySelectorAll('.daymark')) {
       if (m.getBoundingClientRect().top < 60) label = m.dataset.label;
     }
     if (label) { titleEl.textContent = label; titleEl.classList.add('on'); }
     else titleEl.classList.remove('on');
   }, {passive:true});
-  return sc;
+  return inner;
 }
 
 function dayHeader(label, first) {
@@ -377,6 +382,7 @@ function openEvent(e) {
       '<h2></h2><div class="when"></div>' +
       (st === 'live' ? '<div class="live"><i></i>On now</div>' : '') +
       (e.reason ? '<div class="why"></div>' : '') +
+      (e.note ? '<div class="notehint"></div>' : '') +
       (acts ? '<div class="acts">' + acts + '</div>' : '') +
       (st === 'ahead' ? '<div class="hint"></div>' : '') +
       (expiryNote(e, now) ? '<div class="hint">Available ' + expiryNote(e, now) + '.</div>' : '') +
@@ -388,6 +394,7 @@ function openEvent(e) {
     box.querySelector('h2').textContent = e.title;
     box.querySelector('.when').textContent = when;
     if (e.reason) box.querySelector('.why').textContent = e.reason;
+    if (e.note) box.querySelector('.notehint').textContent = e.note;
     if (st === 'ahead') {
       const mins = Math.round((e.start - now) / 60000);
       box.querySelector('.hint').textContent = 'Starts in ' +

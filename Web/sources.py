@@ -81,7 +81,10 @@ NOTABLE = [
 # ── Editorial ────────────────────────────────────────────────────────────
 # No feed carries judgement, so the reason line stays yours.
 REASONS = {
-    "Žalgiris": "Žalgiris are chasing a playoff place.",
+    # Keep these specific. A line that would fit any fixture is not a reason —
+    # a generic "Žalgiris are chasing a playoff place" ended up on every single
+    # Žalgiris game, including routine league ones, which is noise wearing the
+    # clothes of judgement.
     "PSV": "Ajax away at PSV.",
 }
 
@@ -109,15 +112,34 @@ CHANNELS = {
 # For anything no feed covers. Only dates that could be verified.
 # (year, month, day, hour, minute)
 MANUAL = [
-    {"title": "Gargždai vs Žalgiris", "competition": "LKL", "sport": "Basketball",
-     "start": (2026, 9, 17, 18, 50), "minutes": 110, "channel": "Telia Play"},
-    {"title": "Neptūnas vs Žalgiris", "competition": "LKL", "sport": "Basketball",
-     "start": (2026, 9, 20, 16, 50), "minutes": 110, "channel": "Telia Play"},
-    {"title": "Žalgiris vs Šiauliai", "competition": "LKL", "sport": "Basketball",
-     "start": (2026, 9, 27, 16, 50), "minutes": 110, "channel": "Telia Play",
-     "reason": "First home game of the season."},
-    {"title": "Brussels", "competition": "Diamond League", "sport": "Athletics",
-     "start": (2026, 9, 4, 20, 0), "minutes": 150, "channel": "Go3"},
+    # ── LKL ───────────────────────────────────────────────────────────
+    # Dates, tip-off times and venues from the league's own schedule at
+    # lkl.lt/tvarkarastis. sportas.lt disagreed on the 18 October time
+    # (18:50); the league's page says 19:00 and wins.
+    # zalgiris.lt blocks automated requests, so only the fixtures visible
+    # on the league page are here — this is not the full season.
+    {"title": "Nevėžis vs Žalgiris", "competition": "LKL", "sport": "Basketball",
+     "start": (2026, 10, 11, 17, 0), "minutes": 110, "channel": "Telia Play"},
+    {"title": "Žalgiris vs Tauragė", "competition": "LKL", "sport": "Basketball",
+     "start": (2026, 10, 18, 19, 0), "minutes": 110, "channel": "Telia Play"},
+
+    # ── Lithuania, football ───────────────────────────────────────────
+    # UEFA Nations League, Division D. Schedule confirmed by the Lithuanian
+    # Football Federation. No broadcaster published, so none is claimed.
+    {"title": "Lietuva vs Lichtenšteinas", "competition": "Nations League",
+     "sport": "Football", "start": (2026, 11, 16, 19, 0), "minutes": 115,
+     "reason": "Last game of the Nations League cycle."},
+
+    # ── Lithuania, basketball ─────────────────────────────────────────
+    # FIBA World Cup 2027 European Qualifiers, Group J. Date and opponent
+    # confirmed; the tip-off time is single-sourced and FIBA still lists it
+    # as TBD, so the row says so rather than pretending.
+    #
+    # Bosnia vs Lietuva on 29 November is also confirmed, but no time has
+    # been published anywhere. Add it when FIBA announces one.
+    {"title": "Lietuva vs Serbija", "competition": "World Cup qualifiers",
+     "sport": "Basketball", "start": (2026, 11, 26, 18, 0), "minutes": 115,
+     "note": "Tip-off time not yet confirmed."},
 ]
 
 TIMEZONE = "Europe/Vilnius"

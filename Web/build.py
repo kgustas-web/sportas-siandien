@@ -202,6 +202,7 @@ def convert(raw, src):
         "minutes": minutes,
         "channel": src.get("channel"),
         "reason": reason,
+        "note": None,
         "occasion": occasion if src.get("groups_parts") else None,
         "lithuanian": is_lithuanian(title),
         "prominence": prominence(title, reason),
@@ -216,7 +217,7 @@ def manual_events():
             "title": m["title"], "competition": m["competition"], "sport": m["sport"],
             "start": start.astimezone(timezone.utc).isoformat(),
             "minutes": m.get("minutes", 120), "channel": m.get("channel"),
-            "reason": reason, "occasion": None,
+            "reason": reason, "note": m.get("note"), "occasion": None,
             "lithuanian": is_lithuanian(m["title"]) or is_lithuanian(m["competition"]),
             "prominence": prominence(m["title"], reason),
         })

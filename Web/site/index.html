@@ -55,7 +55,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   border-bottom:.5px solid transparent;transition:border-color .2s;
 }
 .nav.edge{border-bottom-color:var(--sep)}
-.nav .bar{height:44px;display:flex;align-items:center;position:relative;padding:0 8px}
+.nav .bar{height:44px;display:flex;align-items:center;position:relative;padding:0 8px;box-sizing:border-box}
 .nav .title{
   position:absolute;left:74px;right:74px;text-align:center;
   font-size:17px;font-weight:600;letter-spacing:-.01em;
@@ -76,6 +76,11 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   padding-bottom:calc(48px + env(safe-area-inset-bottom));
 }
 .scroll::-webkit-scrollbar{display:none}
+
+/* One column, centred. The app is a phone layout; on a wide screen it
+   should sit in the middle rather than stretch a fixture across a metre. */
+.inner{max-width:600px;margin:0 auto;width:100%}
+.nav .bar{max-width:600px;margin:0 auto;width:100%}
 
 /* ── content ── */
 h1.day{
@@ -102,6 +107,7 @@ h1.day.first{margin-top:8px}
 .row.p0 .t{color:var(--label3)}
 .row .why{font-size:15px;margin-top:3px}
 .row .meta{font-size:13px;color:var(--label3);margin-top:4px}
+.row .n{font-size:13px;color:var(--label2);margin-top:5px;line-height:1.36}
 .row .chev{color:var(--label3);font-size:13px;font-weight:600;align-self:center;flex:none}
 .row .live{
   display:inline-flex;align-items:center;gap:5px;font-size:13px;
@@ -143,6 +149,7 @@ h1.day.first{margin-top:8px}
 .btn.sec{background:var(--fill);color:var(--tint);font-weight:400}
 .btn:active{opacity:.7}
 .hint{font-size:13px;color:var(--label2);margin-top:12px}
+.detail .notehint{font-size:15px;color:var(--label2);margin-top:14px;line-height:1.4}
 .reveal{margin-top:auto;padding-top:20px;border-top:.5px solid var(--sep)}
 .reveal a{color:var(--label2);font-size:15px;text-decoration:none;display:block;padding:14px 0}
 </style>

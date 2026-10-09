@@ -174,9 +174,9 @@ let athletes: [Athlete] = [
 
 // No feed carries judgement, so the reason line stays yours.
 // Key is matched case-insensitively against the event title.
+// Keep these specific. A line that would fit any fixture is not a reason.
 let reasons: [String: String] = [
-    "Žalgiris": "Žalgiris are chasing a playoff place.",
-    "PSV":      "Ajax away at PSV.",
+    "PSV": "Ajax away at PSV.",
 ]
 
 // Where each competition actually plays, in this country.

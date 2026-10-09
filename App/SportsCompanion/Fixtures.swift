@@ -19,42 +19,32 @@ func d(_ y: Int, _ mo: Int, _ dd: Int, _ h: Int, _ mi: Int) -> Date {
 
 let manualEvents: [Event] = [
 
-    // ── LKL 2026/27 ───────────────────────────────────────────────────
-    //  Dates and tip-off times from the league schedule on basketnews.lt.
-    //  Broadcast on BTV and Telia Play.
-    //
-    //  Two more Žalgiris–Rytas derbies are known — 2 November in Vilnius and
-    //  6 December in Kaunas — but no tip-off time was published for either,
-    //  so they are left out rather than guessed.
+    // ── LKL ───────────────────────────────────────────────────────────
+    //  From the league's own schedule at lkl.lt/tvarkarastis. sportas.lt
+    //  disagreed on the 18 October time (18:50); the league page says 19:00.
+    //  zalgiris.lt blocks automated requests, so this is not a full season.
 
-    Event(title: "Gargždai vs Žalgiris", competition: "LKL",
-          sport: "Basketball",
-          start: d(2026, 9, 17, 18, 50), minutes: 110, channel: "Telia Play"),
+    Event(title: "Nevėžis vs Žalgiris", competition: "LKL", sport: "Basketball",
+          start: d(2026, 10, 11, 17, 0), minutes: 110, channel: "Telia Play"),
 
-    Event(title: "Neptūnas vs Žalgiris", competition: "LKL",
-          sport: "Basketball",
-          start: d(2026, 9, 20, 16, 50), minutes: 110, channel: "Telia Play"),
+    Event(title: "Žalgiris vs Tauragė", competition: "LKL", sport: "Basketball",
+          start: d(2026, 10, 18, 19, 0), minutes: 110, channel: "Telia Play"),
 
-    Event(title: "Žalgiris vs Šiauliai", competition: "LKL",
-          sport: "Basketball",
-          start: d(2026, 9, 27, 16, 50), minutes: 110, channel: "Telia Play",
-          reason: "First home game of the season."),
+    // ── Lithuania, football ───────────────────────────────────────────
+    //  Nations League Division D, confirmed by the Lithuanian Football
+    //  Federation. No broadcaster published, so none is claimed.
 
-    // ── Athletics, tennis, cycling, winter ────────────────────────────
-    //
-    //  No calendar feed exists for these. That is fine: the Diamond League is
-    //  fourteen meetings a year, the Grand Slams are four, the Grand Tours are
-    //  three. This is twenty lines of typing a season, and it is the part that
-    //  wants judgement anyway — a final, not every heat.
-    //
-    //  `sport` is presentation only — it drives the filter.
-//  Leave `reason` out and the event stays quiet. If a competition here
-    //  matches an athlete in Sources.swift, their line is attached automatically.
-    //
-    //  Only dates that could be verified are entered. Add the rest as they are
-    //  confirmed rather than guessing — a wrong time is worse than a missing one.
+    Event(title: "Lietuva vs Lichtenšteinas", competition: "Nations League",
+          sport: "Football", start: d(2026, 11, 16, 19, 0), minutes: 115,
+          reason: "Last game of the Nations League cycle."),
 
-    Event(title: "Brussels", competition: "Diamond League",
-          sport: "Athletics",
-          start: d(2026, 9, 4, 20, 0), minutes: 150, channel: "Go3"),
+    // ── Lithuania, basketball ─────────────────────────────────────────
+    //  World Cup 2027 European Qualifiers, Group J. Date and opponent are
+    //  confirmed; the tip-off is single-sourced and FIBA still says TBD.
+    //  Bosnia vs Lietuva on 29 November is confirmed too, but no time has
+    //  been published anywhere — add it when FIBA announces one.
+
+    Event(title: "Lietuva vs Serbija", competition: "World Cup qualifiers",
+          sport: "Basketball", start: d(2026, 11, 26, 18, 0), minutes: 115,
+          note: "Tip-off time not yet confirmed."),
 ]
