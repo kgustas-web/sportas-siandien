@@ -169,7 +169,9 @@ MANUAL = [
     {"title": "World Weightlifting Championships",
      "competition": "World Championships", "sport": "Weightlifting",
      "start": (2026, 10, 27, 10, 0), "minutes": 480,
-     "note": "Ningbo, 27 October – 8 November. Also an Olympic qualifier."},
+     "note": "Ningbo, 27 October – 8 November. An Olympic qualifier. "
+             "Lithuania sent six lifters to the 2025 worlds; the 2026 entry "
+             "list is not published yet."},
 ]
 
 TIMEZONE = "Europe/Vilnius"

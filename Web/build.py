@@ -274,6 +274,11 @@ def main():
     OUT.write_text(json.dumps({
         "generated": datetime.now(timezone.utc).isoformat(),
         "timezone": S.TIMEZONE,
+        # Sports you follow in their own right, because a feed exists for
+        # them. Anything else — gymnastics, weightlifting — is in the app
+        # only because Lithuanians turn up there, so it belongs under
+        # Lithuania rather than beside Basketball.
+        "coreSports": sorted({src["sport"] for src in S.SOURCES if src["url"]}),
         "channels": S.CHANNELS,
         "events": events,
         "problems": problems,

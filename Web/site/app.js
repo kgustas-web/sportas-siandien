@@ -226,13 +226,19 @@ function dayHeader(label, first) {
 }
 
 /* ── screens ──────────────────────────────────────────────────────────── */
+/* Top level is only the sports followed in their own right. Gymnastics and
+   weightlifting are in the app because Lithuanians turn up there, so they
+   belong under Lithuania, not beside Basketball. */
 function lensOptions() {
   const now = new Date();
   const up = forward(DATA.events, now).flatMap(d =>
     d.items.flatMap(i => i.kind === 'event' ? [i.event] : i.sessions));
+  const core = new Set(DATA.coreSports || []);
   const opts = [['all', 'All']];
   if (up.some(e => e.lithuanian)) opts.push(['lithuania', 'Lithuania']);
-  [...new Set(up.map(e => e.sport))].sort().forEach(s => opts.push(['sport:' + s, s]));
+  [...new Set(up.map(e => e.sport))].sort()
+    .filter(s => core.has(s))
+    .forEach(s => opts.push(['sport:' + s, s]));
   return opts;
 }
 
